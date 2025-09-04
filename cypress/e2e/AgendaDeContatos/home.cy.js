@@ -1,81 +1,63 @@
 <reference types="cypress" />
+
+
 describe('Testes', () => {
+    const URL = 'https://ebac-agenda-contatos-tan.vercel.app/'
     it('Deve acessar a Agenda de contatos', () => {
-        cy.visit('https://ebac-agenda-contatos-tan.vercel.app/')
-        cy.get('.document.querySelector("#root > div > div > div:nth-child(1) > form"').should('have.length', 3)
+        cy.visit(URL)
+
+
+        //ADICIONAR
+        cy.get('[type="text"]').type('Teste Cypress')
+        cy.get('[type="tel"]').type('445566778899')
+        cy.get('[type="email"]').type('reteste@teste.com')
+
+        cy.get('.adicionar').click()
+
+        
+        cy.contains('Testador Cypress').should('exist')
+        cy.contains('cypress@teste.com').should('exist')
     })
 
-     it('Deve incluir um novo contato', () => {
-        const Nome = 'Teste';
-        const Email = 'teste@testes';
-        const Telefone = '1234567890';
-
-        cy.get('[data-cy="add-contact"]').click();
-
-        cy.get('[data-cy="contact-name"]').type(Nome);
-        cy.get('[data-cy="contact-email"]').type(Email);
-        cy.get('[data-cy="contact-phone"]').type(Telefone);
-
-        cy.get('[data-cy="save-contact"]').click();
-
-        cy.get('.sc-beqWaB.eQdYIq').its('length').as('countBefore');
-
-    
-        cy.get('input[type="text"]').type(Nome);
-        cy.get('input[type="email"]').type(Email);
-        cy.get('input[type="tel"]').type(Telefone);
-
-        cy.get('.adicionar').click();
-
-        cy.get('.sc-beqWaB.eQdYIq').should('contain', Nome);
-        cy.get('.sc-beqWaB.eQdYIq').should('contain', Email);
-        cy.get('.sc-beqWaB.eQdYIq').should('contain', Telefone);
-    }
-)
-});
+        //ALTERAR
 
     it('Alterar contato existente', () => {
-    const nomeOriginal = 'Tests';
-    const novoNome = 'Testes dos Testes';
-    const novoTelefone = '9876543210';
+      cy.visit(URL)
 
-    
-    cy.get('input[type="text"]').type(nomeOriginal);
-    cy.get('input[type="email"]').type('testes1@teste.com');
-    cy.get('input[type="tel"]').type('9876543210');
-    cy.get('.adicionar').click();
+    it('Alterar um contato existente', () => {
+        
+        cy.visit(URL)
 
-    cy.get('.sc-beqWaB.eQdYIq').contains(nomeOriginal).parent().find('.edit').click();
+        cy.get('[type="text"]').type('Alterar')
+        cy.get('[type="tel"]').type('1234567890')
+        cy.get('[type="email"]').type('alterar@teste.com')
+        cy.get('.adicionar').click()
 
-    cy.get('input[type="text"]').clear().type(novoNome);
-    cy.get('input[type="tel"]').clear().type(novoTelefone);
-
-    cy.get('.salvar').click();
-
-    cy.get('.sc-beqWaB.eQdYIq').should('contain', novoNome);
-    cy.get('.sc-beqWaB.eQdYIq').should('contain', novoTelefone);
-  });
+        
+        cy.contains('CAlterar').parent().find('.editar').click()
+        cy.get('[type="text"]').clear().type('Contato Alterado')
+        cy.get('.alterar').click()
 
 
-  it('Remover um contato ', () => {
-   
-    const nomeParaRemover = 'Teste 2';
+        cy.contains('Contato Alterado').should('exist')
+        cy.contains('Contato para Alterar').should('not.exist')
+    })
 
-   
-    cy.get('input[type="text"]').type(nomeParaRemover);
-    cy.get('input[type="email"]').type('testes2@teste.com');
-    cy.get('input[type="tel"]').type('666666666666');
-    cy.get('.adicionar').click();
+        //REMOCAO
 
-    
-    cy.on('window:confirm', (t) => {
-      expect(t).to.equal('Deseja realmente remover esse contato?');
-      return true; 
-    });
+    it('Deve remover um contato da lista', () => {
+        cy.visit(URL)
 
-    
-    cy.get('.sc-beqWaB.eQdYIq').contains(nomeParaRemover).parent().find('.remover').click();
+        cy.get('[type="text"]').type('Contato para Remover')
+        cy.get('[type="tel"]').type('1122334455')
+        cy.get('[type="email"]').type('retesteremover@teste.com')
+        cy.get('.adicionar').click()
 
-   
-    cy.get('.sc-beqWaB.eQdYIq').should('not.contain', nomeParaRemover);
-  });
+        
+        cy.contains('Contato para Remover').parent().find('.remover').click()
+
+
+        cy.contains('Contato para Remover').should('not.exist')
+    })
+  })
+})
