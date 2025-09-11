@@ -8,7 +8,7 @@ describe('Testes', () => {
 
 
         //ADICIONAR
-        cy.get('[type="text"]').type('Teste Cypress')
+        cy.get('[type="text"]').type('Adicionar')
         cy.get('[type="tel"]').type('445566778899')
         cy.get('[type="email"]').type('reteste@teste.com')
 
